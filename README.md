@@ -1,59 +1,208 @@
-# Design-of-FIR-Filters-using-hanning-window
+## 4 C Design of FIR Filters using Hanning Window
 
-#DESIGN OF FIR DIGITAL FILTER 
 
-# AIM: 
-          
-  To generate design of low pass FIR digital filter using SCILAB 
+### AIM:        
+  To generate design of FIR digital filter using Hanning window in SCILAB .  
 
-# APPARATUS REQUIRED: 
-
+### APPARATUS REQUIRED: 
   PC Installed with SCILAB 
 
-# PROGRAM 
-```clc;
-clear;
+### PROGRAM 
+#### a. Design of Low Pass FIR Digital filter
+```python
+clc;
 close;
 
-M = 51;              // Filter length
-fc = 0.4;            // Normalized cutoff frequency (0 to 0.5)
+M = input('Enter the Odd Filter Length = ');
+Wc = input('Enter the Digital Cut off frequency = ');
 
-// Create Hanning window
-n = 0:M-1;
-w = 0.5 - 0.5 * cos(2 * %pi * n / (M-1));
+alpha = (M-1)/2;
 
-// Ideal impulse response for Low Pass Filter
-hd = sin(2 * %pi * fc * (n - (M-1)/2)) ./ (n - (M-1)/2);
-hd((M-1)/2 + 1) = 2 * %pi * fc;  // fix center value
+for n = 1:M
+    if (n == alpha+1) then
+        hd(n) = Wc/%pi;
+    else
+        hd(n) = sin(Wc*((n-1)-alpha))/(((n-1)-alpha)*%pi);
+    end
+end
 
-// Apply window
-h = hd .* w;
+// Hanning Window
+for n = 1:M
+    W(n) = 0.5 - 0.5*cos((2*%pi*(n-1))/(M-1));
+end
 
-// Normalize filter coefficients
-h = h / sum(h);
+h = hd .* W;
 
-// Display coefficients
+disp("Filter Coefficients:");
 disp(h);
 
-// Plot impulse response
-subplot(2,1,1);
-plot(h);
-xlabel('Samples');
-ylabel('Amplitude');
-title('Impulse Response of Low Pass FIR Filter using Hanning Window');
+[hzm,fr] = frmag(h,256);
 
-// Frequency response
-[H, f] = frmag(h, 512);
-subplot(2,1,2);
-plot(f, H);
-xlabel('Normalized Frequency');
+subplot(2,1,1)
+plot(2*fr,hzm)
+xlabel('Normalized Digital Frequency w');
 ylabel('Magnitude');
-title('Frequency Response of Low Pass FIR Filter');
+title('Frequency Response of FIR LPF using Hanning Window');
+
+hzm_dB = 20*log10(hzm);
+
+subplot(2,1,2)
+plot(2*fr,hzm_dB)
+xlabel('Normalized Digital Frequency w');
+ylabel('Magnitude in dB');
+title('Frequency Response of FIR LPF using Hanning Window');
+
 ```
+#### b. Design of High Pass FIR Digital filter
+```python
+clc;
+close;
 
+M = input('Enter the Odd Filter Length = ');
+Wc = input('Enter the Digital Cut off frequency = ');
 
-# OUTPUT
-<img width="1100" height="900" alt="image" src="https://github.com/user-attachments/assets/27bb200c-1392-43c1-98c6-82f2fb4506c4" />
+alpha = (M-1)/2;
+for n = 1:M
+    if (n == alpha+1) then
+        hd(n) = 1 - (Wc/%pi);
+    else
+        hd(n) = -sin(Wc*((n-1)-alpha))/(((n-1)-alpha)*%pi);
+    end
+end
 
-# RESULT
-Thus, a Low Pass FIR Digital Filter was successfully designed using the Hanning window method in SCILAB.
+// Hanning Window
+for n = 1:M
+    W(n) = 0.5 - 0.5*cos((2*%pi*(n-1))/(M-1));
+end
+
+h = hd .* W;
+
+disp("Filter Coefficients:");
+disp(h);
+
+[hzm,fr] = frmag(h,256);
+
+subplot(2,1,1)
+plot(2*fr,hzm)
+xlabel('Normalized Digital Frequency w');
+ylabel('Magnitude');
+title('Frequency Response of FIR HPF using Hanning Window');
+
+hzm_dB = 20*log10(hzm);
+
+subplot(2,1,2)
+plot(2*fr,hzm_dB)
+xlabel('Normalized Digital Frequency w');
+ylabel('Magnitude in dB');
+title('Frequency Response of FIR HPF using Hanning Window');
+
+```
+#### c. Design of Band Pass FIR Digital filter
+```python
+clc ; 
+close ;
+ 
+M=input('Enter the Odd Filter Length ='); 
+Wc1 = input('Enter the Lower Cut off frequency = ');
+Wc2 = input('Enter the Upper Cut off frequency = ');
+
+alpha= (M -1)/2 // Center Value 
+for n = 1:M 
+    if (n ==alpha+1) 
+        hd(n) =(Wc2-Wc1)/%pi ; 
+    else 
+        hd(n) =((sin(Wc2 *((n -1)-alpha)))-(sin(Wc1 *((n -1)-alpha))))/(((n -1)-alpha)*%pi); 
+    end 
+end 
+
+//Hanning Window 
+for n = 1:M 
+    W(n) = 0.5-(0.5*cos((2*%pi*(n-1))/(M-1))); 
+end 
+
+//Windowing filter coefficients 
+h = hd.*W; 
+
+disp("Filter Coefficients:");
+disp(h);
+
+[hzm,fr]= frmag (h,256) ; 
+subplot(2 ,1 ,1) 
+plot(2*fr, hzm) 
+xlabel( ' Normalized Digital Frequency w'); 
+ylabel( 'Magnitude '); 
+title( ' Frequency Response of FIR BPF using Hanning Window ') 
+
+hzm_dB = 20* log10 (hzm);
+ 
+subplot (2 ,1 ,2); 
+plot(2*fr , hzm_dB); 
+xlabel( ' Normalized Digital Frequency W' ); 
+ylabel( 'Magnitude in dB'); 
+title('Frequency Response of FIR BPF using Hanning Window');
+
+```
+#### d. Design of Band Stop FIR Digital filter
+```python
+clc ; 
+close ; 
+M=input('Enter the Odd Filter Length ='); 
+Wc1 = input('Enter the Lower Cut off frequency = ');
+Wc2 = input('Enter the Upper Cut off frequency = '); 
+ 
+alpha= (M -1)/2 // Center Value 
+for n = 1:M 
+    if (n ==alpha+1) 
+        hd(n) =1-((Wc2-Wc1)/%pi); 
+    else 
+        hd(n) =((sin(Wc1 *((n -1)-alpha)))-(sin(Wc2 *((n -1)-alpha))))/(((n -1)-alpha)*%pi); 
+    end 
+end 
+//Hanning Window 
+
+for n = 1:M 
+    W(n) = 0.5-(0.5*cos((2*%pi*(n-1))/(M-1))); 
+end 
+//Windowing filter coefficients 
+
+h = hd.*W;
+ 
+disp("Filter Coefficients:");
+disp(h);
+ 
+[hzm,fr]= frmag (h,256) ; 
+
+subplot(2 ,1 ,1) 
+plot(2*fr, hzm) 
+xlabel( ' Normalized Digital Frequency w'); 
+ylabel( 'Magnitude '); 
+title( ' Frequency Response of FIR BSF using Hanning Window ') 
+
+hzm_dB = 20* log10 (hzm); 
+
+subplot (2 ,1 ,2); 
+plot(2*fr , hzm_dB); 
+xlabel( ' Normalized Digital Frequency W' ); 
+ylabel( 'Magnitude in dB'); 
+title('Frequency Response of FIR BSF using Hanning Window'); 
+
+```
+### OUTPUT
+#### a. Design of Low Pass FIR Digital filter
+<img width="404" height="435" alt="image" src="https://github.com/user-attachments/assets/556d5dce-3f0e-4b6b-a959-a5e6c9708355" />
+<img width="405" height="436" alt="image" src="https://github.com/user-attachments/assets/9f6fb1bb-e684-4ede-881b-784425531266" />
+
+#### b. Design of High Pass FIR Digital filter
+<img width="404" height="440" alt="image" src="https://github.com/user-attachments/assets/5c870001-7ba6-488a-82c8-ee8190d74b38" />
+<img width="407" height="442" alt="image" src="https://github.com/user-attachments/assets/603ea566-f812-4198-9d30-bb54e1a728e8" />
+
+#### c. Design of Band Pass FIR Digital filter
+<img width="393" height="437" alt="image" src="https://github.com/user-attachments/assets/2e438f17-f444-4547-911d-61a4bbd7bde0" />
+<img width="415" height="435" alt="image" src="https://github.com/user-attachments/assets/c6bc4fa4-c59c-4f99-8a03-5965f87e4c13" />
+
+#### d. Design of Band Stop FIR Digital filter
+<img width="383" height="452" alt="image" src="https://github.com/user-attachments/assets/89040cc3-f5aa-4b78-8f57-392e722d2bc0" />
+<img width="406" height="437" alt="image" src="https://github.com/user-attachments/assets/3a78d9b9-2d95-43b7-997e-163abef1aafb" />
+
+### RESULT
+The FIR Filters were successfully designed using Hanning window Technique.
